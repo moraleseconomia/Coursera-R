@@ -101,33 +101,92 @@ http://www.tech.theplayhub.com/reading_multiple_files_and_calculating_mean_based
     http://xmuxiaomo.github.io/2015/06/10/R-Programming-Assignment-1/
     
     
-
+"~/GitHub/Coursera-R/R-programming/"
+    
   
   
       
-      
-############################################Primera tarea###################
+############################################################################      
+###################      Primera tarea           ###########################
 ############################################################################
       
-pollutants <- function(directory, pollutant, id) {
-  nombre = paste(formatC(id, width=3, flag = "0"), ".csv", sep="")
-  locarchivo = paste(directory, "/", nombre, sep = "")
-  dato <- data.frame()
-  for(i in id) {
-    dato <- rbind(dato, read.csv(locarchivo[i]))
-  }
-  mean(dato[[pollutant]], na.rm=TRUE)
-}
-#############################################################################
-#############################################################################
+pollutantmean <- function(directory, pollutant, id) {
+         datos <- data.frame()
+       for(i in id) {
+        nombre = paste(formatC(i, width=3, flag = "0"), ".csv", sep="")
+        locarchivo = paste("~/Coursera-R/R-programming/",directory, "/", nombre, sep = "")
+        dato <- rbind(datos[[pollutant]], read.csv(locarchivo[id]))
+      }
+      mean(dato, na.rm=TRUE)
+      }
     
-"~/GitHub/Coursera-R/R-programming/"
+#############################################################################
+#############################################################################
+pollutantmean("specdata", "sulfate", id=1:10)
+#############################################################################    
+pollutantmean("specdata", "nitrate", id=70:72)
+##############################################################################    
+pollutantmean("specdata", "nitrate", id=23)
 ##############################################################################    
     
     
+    pollutantmean <- function(directory, pollutant, id) {
+      dato = c()
+      for (i in id) {
+      nombre = paste(formatC(i, width=3, flag = "0"), ".csv", sep="")
+      locarchivo = paste("~/Coursera-R/R-programming/",directory, "/", nombre, sep = "")
+        datos <- read.csv(locarchivo)
+       dato <- c(dato, datos[[pollutant]])
+      }
+      return(mean(dato, na.rm=TRUE))
+    }
     
     
     
     
+    
+#############################################################################################################
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+complete <- function(directory, pollutant, id=1:332) {
+ data = numeric()
+    for (i in id) {
+      newRead = read.csv(paste(directory, "/", formatC(i, width = 3, flag = "0"), 
+                               ".csv", sep = ""))
+      data = c(data, newRead[[pollutant]])
+                   }
+    return(mean(data, na.rm = TRUE)) 
+ }    
+    
+        
+    
+    
+    
+######################################################################################################
+    
+    complete <- function(directory, id=1:332) {
+      dato = data.frame()
+      for (i in id) {
+        nombre = paste(formatC(i, width=3, flag = "0"), ".csv", sep="")
+        locarchivo = paste("~/Coursera-R/R-programming/",directory, "/", nombre, sep = "")
+        datos <- read.csv(locarchivo)
+        dato<-rbind(dato, c(i,sum(complete.cases(datos))))
+      }
+      colnames(dato)<-c("id", "nobs")
+      return(dato)
+      }
+    
+    
+###################################################################################################
+    
+ complete("specdata", 1)   
     
     
