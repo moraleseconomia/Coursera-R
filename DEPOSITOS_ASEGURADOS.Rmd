@@ -1,0 +1,1194 @@
+---
+title:  "Cálculos de los Depósitos Asegurados por FOGADE"
+output: html_notebook
+---
+
+  
+*Mayo 2017*
+
+Tipo de cambio:
+```{r, echo=FALSE, results="asis", comment=""}
+TIPO_CAMBIO <- 29.9226
+cat(TIPO_CAMBIO)
+```
+
+Utilizando biblioteca dplyr para el análisis:
+```{r}
+#install.packages("dplyr")
+library(dplyr)
+```
+
+
+Importando la base de datos:
+```{r}
+mydata = read.table("ANXBCO_M_Depositos_FOGADE_mayo2017.txt", sep="|", header=FALSE)
+```
+
+Ver la base de datos en bruto:
+```{r, echo=FALSE}
+mydata
+```
+
+## Funciones creadas para facilitar cálculos
+```{r}
+sumvacio <- function(x,y)
+  if(!is.na(x) & !is.na(y)){
+    cat(x+y)
+ } else if(!is.na(x)) {
+#   x<-0
+   cat(x)
+ }else if (!is.na(y)) {
+#   y<-0
+   cat(y)
+# } else {
+    cat("")
+ }
+```
+
+
+## Filtrando Banpro.
+*Formato de "Depósitos Totales"*
+```{r}
+DBanpro <- filter(mydata, V1 == "1105" & V2 == "1")
+DBanpro
+```
+
+FORMATO DEPOSITOS TOTALES
+
+<table>
+<table width=100% height=100% BORDER=1 style="font-size:10px" cellspacing="0" cellpadding="0.0005">
+  <tr>
+  <td><strong> </strong></td>
+  <td><strong> </strong></td>
+  <td colspan="2" ALIGN=CENTER ><strong>MONEDA NACIONAL</strong></td>
+  <td colspan="2"  ALIGN=CENTER><strong>MONEDA EXTRANJERA</strong></td>
+  <td ALIGN=CENTER><strong></strong></td>
+  </tr>
+  
+  <tr>
+  <td><strong></strong></td>
+  <td><strong></strong></td>
+  <td ALIGN=CENTER><strong>Cantidad de Depositantes</strong></td>
+  <td ALIGN=CENTER><strong>Monto</strong></td>
+  <td ALIGN=CENTER><strong>Cantidad de Depositantes</strong></td>
+  <td ALIGN=CENTER><strong>Monto (cordobizado)</strong></td>
+  <td ALIGN=CENTER><strong>Total Montos</strong></td>
+  </tr>
+  
+  
+<tr>
+<td><strong>A</strong></td>
+<td><strong>Depósitos Totales</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 1 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 1 & DBanpro$V4 == 1]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 1 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 1 & DBanpro$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 1 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 1 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+
+```
+</td>
+</tr>
+
+
+  
+<tr>
+  <td><strong></strong></td>
+  <td><strong>Menos</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER><strong>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.1</strong></td>
+  <td><strong>Depósitos de Otras Instituciones Financieras</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 41 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 41 & DBanpro$V4 == 1]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 41 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 41 & DBanpro$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 41 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 41 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.2</strong></td>
+  <td><strong>Los depósitos mantenidos por Administradoras de Fondos de Pensiones, Bolsas de Valores, Puesto de Bolsa y cualquier otro inversionista institucional</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 42 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 42 & DBanpro$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 42 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 42 & DBanpro$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 42 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 42 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+
+
+</td>
+</tr>
+
+<tr>
+  <td><strong>B.3</strong></td>
+  <td><strong>Depósitos de Instituciones del Sector Público</strong></td>
+  
+</td>  
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 43 & DBanpro$V4 == 1])
+```
+</td>
+
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 43 & DBanpro$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 43 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 43 & DBanpro$V4 == 3]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 43 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 43 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.4</strong></td>
+  <td><strong> Los depósitos de empresas o entidades jurídicas que pertenezcan al mismo grupo económico de dicha Institución Financiera</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 44 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 44 & DBanpro$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 44 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 44 & DBanpro$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 44 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 44 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.5</strong></td>
+  <td><strong>Depósitos de Directores, Gerentes, Accionistas, representantes legales, Auditores y de quienes ejerzan materialmente funciones directivas en la entidad y los que pertenecieran a sus cónyuges y parientes hasta el segundo grado de consanguinidad o primero de afinidad</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 45 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 45 & DBanpro$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 45 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 45 & DBanpro$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 45 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 45 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.6</strong></td>
+  <td><strong>Los Depósitos de personas o entidades que tengan una tasa de remuneración superior a las prevalecientes en dicha entidad para depósitos similares de otros depositantes</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 46 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 46 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 46 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 46 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.7</strong></td>
+  <td><strong>Los Depósitos de personas o entidades cuyas relaciones económicas con la entidad hayan contribuido manifiestamente al deterioro patrimonial de la misma</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 47 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 47 & DBanpro$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 47 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER><strong>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 47 & DBanpro$V4 == 3]/1000)
+
+```
+</td>
+<td ALIGN=CENTER><strong>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 47 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 47 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.8</strong></td>
+  <td><strong>Los Depósitos originados por transacciones relacionadas a sentencias condenatorias por la comisión de ilícitos, y en general, los depósitos constituidos con infracción grave de normas legales o reglamentarias imputables al depositante</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 48 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 48 & DBanpro$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 48 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 48 & DBanpro$V4 == 3]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 48 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 48 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.9</strong></td>
+  <td><strong>Los instrumentos que gozando formalmente de la denominación de depósito, sean esencialmente operaciones distintas</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 49 & DBanpro$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 49 & DBanpro$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V6[DBanpro$V3 == 49 & DBanpro$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DBanpro$V7[DBanpro$V3 == 49 & DBanpro$V4 == 3]/1000)
+
+```
+</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DBanpro$V7[DBanpro$V3 == 49 & DBanpro$V4 == 1]/1000
+b <- DBanpro$V7[DBanpro$V3 == 49 & DBanpro$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong></strong></td>
+  <td><strong>TOTAL B</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 1)
+cat(sum(a$V6))
+```
+
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 1)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 3)
+cat(sum(a$V6))
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 3)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 1)
+b <- filter(DBanpro, V3 > 3 & V4 == 3)
+a <- sum(a$V7/1000)
+b <- sum(b$V7/1000)
+cat(a+b)
+
+```
+</td>
+</tr>
+
+
+
+<tr>
+  <td><strong></strong></td>
+  <td><strong>TOTAL A-B</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 1)
+a <- sum(a$V6)
+b <- filter(DBanpro, V3 == 1 & V4 == 1)
+b <- sum(b$V6)
+cat(b-a)
+```
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 1)
+a <- sum(a$V7/1000)
+b <- filter(DBanpro, V3 == 1 & V4 == 1)
+b <- sum(b$V7/1000)
+cat(b-a)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 3)
+a <- sum(a$V6)
+b <- filter(DBanpro, V3 == 1 & V4 == 3)
+b <- sum(b$V6)
+cat(b-a)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 > 3 & V4 == 3)
+a <- sum(a$V7/1000)
+b <- filter(DBanpro, V3 == 1 & V4 == 3)
+b <- sum(b$V7/1000)
+cat(b-a)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 == 1 & V4 == 1)
+b <- filter(DBanpro, V3 > 3 & V4 == 1)
+c1 <- sum(a$V7) - sum(b$V7)
+
+a <- filter(DBanpro, V3 == 1 & V4 == 3)
+b <- filter(DBanpro, V3 > 3 & V4 == 3)
+c2 <- sum(a$V7) - sum(b$V7)
+
+cat(c1/1000+c2/1000)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong></strong></td>
+  <td><strong>Otras Obligaciones</strong>
+  </td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 == 3 & V4 == 1)
+cat(sum(a$V6))
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 == 3 & V4 == 1)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 == 3 & V4 == 3)
+cat(sum(a$V6))
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 == 3 & V4 == 3)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DBanpro, V3 == 3 & V4 == 1)
+b <- filter(DBanpro, V3 == 3 & V4 == 3)
+cat(sum(a$V7/1000)+sum(b$V7/1000))
+```
+</td>
+</tr>
+</table>
+
+## Filtrando Bancentro.
+
+## Filtrando Bac.
+
+## Filtrando Bdf.
+
+
+## Filtrando Ficohsa.
+
+
+
+
+## Filtrando Procredit.
+
+*Formato de "Depósitos Totales"*
+```{r}
+DProcredit <- filter(mydata, V1 == "1113" & V2 == "1")
+DProcredit
+```
+
+<table>
+<table width=100% height=100% BORDER=1 style="font-size:10px" cellspacing="0" cellpadding="0.0005">
+  <tr>
+  <td><strong> </strong></td>
+  <td><strong> </strong></td>
+  <td colspan="2" ALIGN=CENTER ><strong>MONEDA NACIONAL</strong></td>
+  <td colspan="2"  ALIGN=CENTER><strong>MONEDA EXTRANJERA</strong></td>
+  <td ALIGN=CENTER><strong></strong></td>
+  </tr>
+  
+  <tr>
+  <td><strong></strong></td>
+  <td><strong></strong></td>
+  <td ALIGN=CENTER><strong>Cantidad de Depositantes</strong></td>
+  <td ALIGN=CENTER><strong>Monto</strong></td>
+  <td ALIGN=CENTER><strong>Cantidad de Depositantes</strong></td>
+  <td ALIGN=CENTER><strong>Monto (cordobizado)</strong></td>
+  <td ALIGN=CENTER><strong>Total Montos</strong></td>
+  </tr>
+  
+  
+<tr>
+<td><strong>A</strong></td>
+<td><strong>Depósitos Totales</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 1 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 1 & DProcredit$V4 == 1]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 1 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 1 & DProcredit$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 1 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 1 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+
+```
+</td>
+</tr>
+
+
+  
+<tr>
+  <td><strong></strong></td>
+  <td><strong>Menos</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER><strong>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.1</strong></td>
+  <td><strong>Depósitos de Otras Instituciones Financieras</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 41 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 41 & DProcredit$V4 == 1]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 41 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 41 & DProcredit$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 41 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 41 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.2</strong></td>
+  <td><strong>Los depósitos mantenidos por Administradoras de Fondos de Pensiones, Bolsas de Valores, Puesto de Bolsa y cualquier otro inversionista institucional</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 42 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 42 & DProcredit$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 42 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 42 & DProcredit$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 42 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 42 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+
+
+</td>
+</tr>
+
+<tr>
+  <td><strong>B.3</strong></td>
+  <td><strong>Depósitos de Instituciones del Sector Público</strong></td>
+  
+</td>  
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 43 & DProcredit$V4 == 1])
+```
+</td>
+
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 43 & DProcredit$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 43 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 43 & DProcredit$V4 == 3]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 43 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 43 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.4</strong></td>
+  <td><strong> Los depósitos de empresas o entidades jurídicas que pertenezcan al mismo grupo económico de dicha Institución Financiera</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 44 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 44 & DProcredit$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 44 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 44 & DProcredit$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 44 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 44 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.5</strong></td>
+  <td><strong>Depósitos de Directores, Gerentes, Accionistas, representantes legales, Auditores y de quienes ejerzan materialmente funciones directivas en la entidad y los que pertenecieran a sus cónyuges y parientes hasta el segundo grado de consanguinidad o primero de afinidad</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 45 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 45 & DProcredit$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 45 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 45 & DProcredit$V4 == 3]/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 45 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 45 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.6</strong></td>
+  <td><strong>Los Depósitos de personas o entidades que tengan una tasa de remuneración superior a las prevalecientes en dicha entidad para depósitos similares de otros depositantes</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 46 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 46 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 46 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 46 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.7</strong></td>
+  <td><strong>Los Depósitos de personas o entidades cuyas relaciones económicas con la entidad hayan contribuido manifiestamente al deterioro patrimonial de la misma</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 47 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 47 & DProcredit$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 47 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER><strong>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 47 & DProcredit$V4 == 3]/1000)
+
+```
+</td>
+<td ALIGN=CENTER><strong>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 47 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 47 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.8</strong></td>
+  <td><strong>Los Depósitos originados por transacciones relacionadas a sentencias condenatorias por la comisión de ilícitos, y en general, los depósitos constituidos con infracción grave de normas legales o reglamentarias imputables al depositante</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 48 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 48 & DProcredit$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 48 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 48 & DProcredit$V4 == 3]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 48 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 48 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong>B.9</strong></td>
+  <td><strong>Los instrumentos que gozando formalmente de la denominación de depósito, sean esencialmente operaciones distintas</strong></td>
+<td ALIGN=RIGHT>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 49 & DProcredit$V4 == 1])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 49 & DProcredit$V4 == 1]/1000)
+
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V6[DProcredit$V3 == 49 & DProcredit$V4 == 3])
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+cat(DProcredit$V7[DProcredit$V3 == 49 & DProcredit$V4 == 3]/1000)
+
+```
+</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- DProcredit$V7[DProcredit$V3 == 49 & DProcredit$V4 == 1]/1000
+b <- DProcredit$V7[DProcredit$V3 == 49 & DProcredit$V4 == 3]/1000
+a[is.logical(a)] <- 0
+b[is.logical(b)] <- 0
+sumvacio(a,b)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong></strong></td>
+  <td><strong>TOTAL B</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 1)
+cat(sum(a$V6))
+```
+
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 1)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 3)
+cat(sum(a$V6))
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 3)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 1)
+b <- filter(DProcredit, V3 > 3 & V4 == 3)
+a <- sum(a$V7/1000)
+b <- sum(b$V7/1000)
+cat(a+b)
+
+```
+</td>
+</tr>
+
+
+
+<tr>
+  <td><strong></strong></td>
+  <td><strong>TOTAL A-B</strong></td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 1)
+a <- sum(a$V6)
+b <- filter(DProcredit, V3 == 1 & V4 == 1)
+b <- sum(b$V6)
+cat(b-a)
+```
+
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 1)
+a <- sum(a$V7/1000)
+b <- filter(DProcredit, V3 == 1 & V4 == 1)
+b <- sum(b$V7/1000)
+cat(b-a)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 3)
+a <- sum(a$V6)
+b <- filter(DProcredit, V3 == 1 & V4 == 3)
+b <- sum(b$V6)
+cat(b-a)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 > 3 & V4 == 3)
+a <- sum(a$V7/1000)
+b <- filter(DProcredit, V3 == 1 & V4 == 3)
+b <- sum(b$V7/1000)
+cat(b-a)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 == 1 & V4 == 1)
+b <- filter(DProcredit, V3 > 3 & V4 == 1)
+c1 <- sum(a$V7) - sum(b$V7)
+
+a <- filter(DProcredit, V3 == 1 & V4 == 3)
+b <- filter(DProcredit, V3 > 3 & V4 == 3)
+c2 <- sum(a$V7) - sum(b$V7)
+
+cat(c1/1000+c2/1000)
+```
+</td>
+</tr>
+
+
+<tr>
+  <td><strong></strong></td>
+  <td><strong>Otras Obligaciones</strong>
+  </td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 == 3 & V4 == 1)
+cat(sum(a$V6))
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 == 3 & V4 == 1)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 == 3 & V4 == 3)
+cat(sum(a$V6))
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 == 3 & V4 == 3)
+cat(sum(a$V7)/1000)
+```
+</td>
+<td ALIGN=CENTER>
+```{r, echo=FALSE, results="asis", comment=""}
+a <- filter(DProcredit, V3 == 3 & V4 == 1)
+b <- filter(DProcredit, V3 == 3 & V4 == 3)
+cat(sum(a$V7/1000)+sum(b$V7/1000))
+```
+</td>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
